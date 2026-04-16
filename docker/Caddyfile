@@ -1,0 +1,36 @@
+# ═══ SPEngine Caddy Config ═══
+# DOMAIN UND PASSWORT ANPASSEN vor Deploy!
+
+168-119-115-113.sslip.io {
+    basic_auth * {
+        admin $2a$14$A3nOx1m/z8rGcbVFJ5vc/upLow8dakNuFoYyprNudXDo9Gxk6MN76
+    }
+
+    handle /api/* {
+        reverse_proxy api:3001
+    }
+
+    handle {
+        reverse_proxy app:80
+    }
+}
+
+# ═══ PRODUKTION MIT DOMAIN + HTTPS ═══
+# Ersetze den Block oben mit diesem:
+#
+# spengine.deine-domain.de {
+#     basicauth * {
+#         admin $2a$14$LxoM4As79.r.QhrjFQ3XgOPpQ1e61cqPqNWqS2UzXfZuCgpMNl3YK
+#     }
+#
+#     handle /api/* {
+#         reverse_proxy api:3001
+#     }
+#     handle {
+#         reverse_proxy app:80
+#     }
+# }
+#
+# Passwort-Hash erzeugen:
+#   docker run caddy caddy hash-password --plaintext MeinSicheresPasswort123
+# Ergebnis (z.B. $2a$14$abc...) oben bei HIER_DEINEN_HASH einfuegen.

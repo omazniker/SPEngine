@@ -1,0 +1,85 @@
+ABN AMRO Bank
+ANZ Group Holdings
+ASN Bank
+AXA
+Aareal Bank
+Achmea Bank
+Aegon
+Allianz
+American International Group
+Aviva
+BAWAG Group
+BBVA
+BNP Paribas
+BPCE
+Banco Santander
+Bank of America
+Bank of Ireland Group
+Bank of Nova Scotia
+Banque Féd. du Crédit Mutuel
+Barclays PLC
+Bayerische Landesbank
+Belfius Bank
+CaixaBank
+Canadian Imperial Bank of Commerce
+Citigroup
+Commerzbank
+Commonwealth Bk of Australia
+Cooperatieve Rabobank UA
+Crédit Agricole
+Crédit Mutuel Arkéa SACC
+DNB Bank
+Danske Bank
+DekaBank
+Deutsche Bank
+Deutsche Pfandbriefbank
+Erste Group Bank
+Féd. des caisses Desjardins
+Generali
+Goldman Sachs Group
+HSBC Holdings
+HYPO NOE
+Hamburg Commercial Bank
+Hannover Rück
+ING Groep
+Intesa Sanpaolo
+JPMorgan Chase & Co.
+Jefferies Financial Group
+Jyske Bank
+KBC Groep
+La Banque Postale
+Landesb. Baden-Württemberg
+Landesbank Hessen-Thüringen
+Lloyds Banking Group
+Mizuho Financial Group
+Morgan Stanley
+Munich Re
+NIBC Bank
+NORD/LB Girozentrale
+NatWest Group
+National Australia Bank
+Nationwide Building Society
+Nordea Bank Abp
+Nykredit Realkredit
+OP Corporate Bank
+RLB Niederösterreich-Wien
+RLB Oberösterreich
+Raiffeisen Bank International
+Royal Bank of Canada
+SBAB Bank
+SEB
+Société Générale
+SpareBank 1 Oestlandet
+SpareBank 1 SMN
+SpareBank 1 Soer-Norge ASA
+Sparebanken Norge
+Standard Chartered
+Sumitomo Mitsui Financial Group
+Svenska Handelsbanken
+Swedbank
+Swiss Re
+UBS Group
+Unicredit
+Wells Fargo
+Westpac Banking Corp.
+Zurich Insurance Group

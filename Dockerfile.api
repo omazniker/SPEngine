@@ -1,0 +1,15 @@
+# ═══ SPEngine API Server ═══
+FROM node:20-alpine
+WORKDIR /app
+
+COPY server/package.json ./
+RUN npm install --production
+
+COPY server/ ./
+
+# DB-Verzeichnis (für SQLite-Datei — wird als Volume gemountet)
+# database.js liegt bewusst in /app/ (nicht in /app/db/), damit das Volume es nicht überschreibt
+RUN mkdir -p /app/db
+
+EXPOSE 3001
+CMD ["node", "index.js"]
