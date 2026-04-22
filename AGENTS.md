@@ -51,7 +51,7 @@ SPEngine ist ein **Bond-Portfolio-Optimierungs-Tool**: Bonds laden → Constrain
 
 **Aggregatwurzeln:** `Session` (enthält Portfolio + Scenarios als Transaktions-Einheit) und `UniverseProfile` (immutable Bond-Snapshot).
 
-**Rollen:** Das originale SPEngine ist **Single-User** (keine Auth, keine Rollen). Der Next.js-Aufbau kann optional Multi-User via Supabase Auth bekommen (`user_id` auf jeder Tabelle, RLS je `auth.uid()`). Die E2E-`buyer/supplier/approver`-Rollen aus `test-data-factory.ts` bleiben Template für spätere SaaS-Erweiterung und sind nicht an die SPEngine-Domäne gebunden.
+**Rollen:** SPEngine ist **Single-User**. Das Original (`/opt/spengine/`) hat keine Auth; die Next.js-Variante nutzt Supabase Auth nur zur Isolation der eigenen Daten (`user_id` auf jeder Tabelle, RLS je `auth.uid()`). Keine Mandantenstruktur, keine Approver-Workflows, keine Lieferketten — jeder Nutzer sieht nur seine Sessions/Scenarios. E2E-Fixtures entsprechend: ein Primärnutzer (`PRIMARY_EMAIL`), optional ein Sekundärnutzer (`SECONDARY_EMAIL`) für RLS-Tests. Keine Rollen-Typen.
 
 **Quellen:** `/opt/spengine/server/` (Express-Routes), `/opt/spengine/data/` (Excel-Snapshots), `/opt/spengine/DOKUMENTATION.md`.
 

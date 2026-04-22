@@ -11,13 +11,11 @@ import {
   getStoredTestUser,
   storeTestUser,
   type TestUser,
-  type TestUserRole,
 } from "./test-user-store";
 
 export interface EnsureUserParams {
   email: string;
   password: string;
-  role: TestUserRole;
   company?: string;
 }
 
@@ -92,7 +90,6 @@ export async function ensureUser(browser: Browser, params: EnsureUserParams): Pr
     return storeTestUser({
       email: params.email,
       password: params.password,
-      role: params.role,
       profileId: profile?.id,
       authStatePath: storagePath,
     });

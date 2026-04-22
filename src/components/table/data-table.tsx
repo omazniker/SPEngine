@@ -38,7 +38,7 @@ export interface DataTableProps<TRow> {
   isLoading?: boolean;
   skeleton?: ReactNode;
   emptyState?: ReactNode;
-  /** Prefix für `data-testid`. Beispiel: `sourcings` → `sourcings-row-{id}`. */
+  /** Prefix für `data-testid`. Beispiel: `sessions` → `sessions-row-{id}`. */
   testIdPrefix: string;
   className?: string;
 }

@@ -3,13 +3,9 @@ import { dirname, resolve } from "node:path";
 
 const STORE_PATH = resolve(process.cwd(), "e2e/.auth/test-users.json");
 
-export type TestUserRole = "buyer" | "supplier" | "approver" | "admin";
-
 export interface TestUser {
   email: string;
   password: string;
-  role: TestUserRole;
-  orgId?: string;
   profileId?: string;
   authStatePath?: string;
   createdAt: string;
