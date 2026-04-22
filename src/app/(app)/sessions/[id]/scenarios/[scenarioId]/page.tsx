@@ -6,11 +6,15 @@ import { ArrowLeftIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
+import { getSessionAction } from "@/features/sessions";
 import {
   getScenarioAction,
   SCENARIO_STATUS,
   type ScenarioStatus,
 } from "@/features/scenarios";
+import { getUniverseProfileAction, type UniverseBond } from "@/features/universe";
+
+import { BondSelector, SelectedBondsReadonly } from "./bond-selector";
 
 export const metadata: Metadata = {
   title: "Szenario — SPEngine",
@@ -34,9 +38,12 @@ export default async function ScenarioDetailPage({
   params: Promise<{ id: string; scenarioId: string }>;
 }) {
   const { id: sessionId, scenarioId } = await params;
-  const result = await getScenarioAction({ scenarioId });
+  const [scenarioResult, sessionResult] = await Promise.all([
+    getScenarioAction({ scenarioId }),
+    getSessionAction({ sessionId }),
+  ]);
 
-  if ("error" in result && result.error) {
+  if ("error" in scenarioResult && scenarioResult.error) {
     return (
       <main
         data-testid="scenario-detail-page"
@@ -56,14 +63,33 @@ export default async function ScenarioDetailPage({
           data-testid="scenario-detail-error"
           className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"
         >
-          {result.error}
+          {scenarioResult.error}
         </div>
       </main>
     );
   }
 
-  const scenario = result.data;
+  const scenario = scenarioResult.data;
   if (!scenario) notFound();
+
+  // Bonds aus dem Session-Universum laden, wenn verknüpft.
+  const session = "data" in sessionResult ? sessionResult.data : null;
+  const universeProfileId = session?.universe_profile_id ?? null;
+
+  let bonds: UniverseBond[] = [];
+  if (universeProfileId) {
+    const universeResult = await getUniverseProfileAction({
+      universeProfileId,
+    });
+    if (!("error" in universeResult) && universeResult.data) {
+      bonds = (universeResult.data.bonds ?? []) as UniverseBond[];
+    }
+  }
+
+  const selectedIsins = Array.isArray(scenario.config.selectedIsins)
+    ? scenario.config.selectedIsins.filter((v): v is string => typeof v === "string")
+    : [];
+  const isDraft = scenario.status === SCENARIO_STATUS.DRAFT;
 
   return (
     <main
@@ -94,6 +120,27 @@ export default async function ScenarioDetailPage({
           ID: {scenario.id}
         </p>
       </header>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Bonds</h2>
+        {!universeProfileId ? (
+          <p
+            className="text-sm text-muted-foreground"
+            data-testid="scenario-no-universe"
+          >
+            Diese Session hat kein verknüpftes Universum — Bonds werden erst verfügbar,
+            sobald beim Anlegen einer Session ein Universum gewählt wird.
+          </p>
+        ) : isDraft ? (
+          <BondSelector
+            scenarioId={scenario.id}
+            bonds={bonds}
+            initialSelectedIsins={selectedIsins}
+          />
+        ) : (
+          <SelectedBondsReadonly selectedIsins={selectedIsins} />
+        )}
+      </section>
 
       <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="rounded-lg border p-4" data-testid="scenario-config">

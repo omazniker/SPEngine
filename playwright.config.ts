@@ -118,6 +118,12 @@ export default defineConfig({
       dependencies: ["journey-user-setup"],
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "journey-scenario-bond-config",
+      testMatch: /09-scenario-bond-config\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Weitere Journeys werden hier ergänzt, sobald SPEngine-Next-Domäne steht.
   ],
 });

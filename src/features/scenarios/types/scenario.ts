@@ -10,8 +10,19 @@ export interface ScenarioListItem {
   updated_at: string;
 }
 
+/**
+ * Config-Felder, die vom UI-Editor verstanden werden. Die `scenarios.config`-
+ * Spalte ist ein offenes jsonb — spätere Optimierer-Varianten können zusätzliche
+ * Felder hinzufügen, ohne die bestehenden zu invalidieren.
+ */
+export interface ScenarioConfig {
+  /** ISINs der aus dem Session-Universum ausgewählten Bonds. */
+  selectedIsins?: string[];
+  [key: string]: unknown;
+}
+
 export interface ScenarioDetail extends ScenarioListItem {
-  config: Record<string, unknown>;
+  config: ScenarioConfig;
   result: unknown[];
   stats: Record<string, unknown>;
 }

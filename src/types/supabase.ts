@@ -254,6 +254,10 @@ export type Database = {
       }
       restore_session: { Args: { p_session_id: string }; Returns: undefined }
       save_scenario: { Args: { p_scenario_id: string }; Returns: undefined }
+      update_scenario_config: {
+        Args: { p_config: Json; p_scenario_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

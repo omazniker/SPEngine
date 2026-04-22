@@ -45,4 +45,11 @@ export type {
   DeleteScenarioResult,
 } from "./actions/delete-scenario/types";
 
-export type { ScenarioDetail, ScenarioListItem } from "./types/scenario";
+export { updateScenarioConfigAction } from "./actions/update-scenario-config";
+export { updateScenarioConfigSchema } from "./actions/update-scenario-config/schema";
+export type {
+  UpdateScenarioConfigInput,
+  UpdateScenarioConfigResult,
+} from "./actions/update-scenario-config/types";
+
+export type { ScenarioConfig, ScenarioDetail, ScenarioListItem } from "./types/scenario";
