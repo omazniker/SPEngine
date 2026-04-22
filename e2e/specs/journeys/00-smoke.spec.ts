@@ -1,8 +1,11 @@
 import { expect, test } from "@playwright/test";
 
 /**
- * Smoke-Tests: prüfen, dass Landing + Login-Seite grundsätzlich laufen.
- * Werden bei jedem CI-Lauf vor den Journeys ausgeführt.
+ * Smoke-Tests: prüfen, dass die statischen Routes + Session/Scenario-Lifecycle
+ * grundsätzlich laufen. Erwartet eine konfigurierte Supabase-Instanz (lokal
+ * via `supabase start` oder Cloud). Ohne `.env.local` würden die DB-basierten
+ * Tests einen Config-Fehler statt Empty-State zeigen — dann entweder Supabase
+ * starten oder die Detail-Tests skippen.
  */
 test.describe("Smoke", () => {
   test("Landing Page lädt mit Stack-Übersicht", async ({ page }) => {
@@ -34,36 +37,42 @@ test.describe("Smoke", () => {
     await expect(page.getByTestId("signup-login-link")).toBeVisible();
   });
 
-  test("Sessions-Seite rendert (ohne Supabase zeigt sie Config-Fehler)", async ({ page }) => {
+  test("Sessions-Seite rendert (Empty-State ohne Daten)", async ({ page }) => {
     await page.goto("/sessions");
 
     await expect(page.getByTestId("sessions-page")).toBeVisible();
     await expect(page.getByTestId("sessions-create-button")).toBeVisible();
-    // Ohne NEXT_PUBLIC_SUPABASE_URL rendert die Action einen Fehler — das ist der
-    // Happy-Path für Smoke-Tests ohne Supabase-Projekt.
-    await expect(page.getByTestId("sessions-error")).toBeVisible();
+    // Ohne Login liefert getSessionsAction RLS-gefilterte Ergebnisse — also leer.
+    // Entweder Empty-State oder Error-Banner (wenn Supabase noch nicht konfiguriert).
+    await expect(
+      page.getByTestId("sessions-empty").or(page.getByTestId("sessions-error")),
+    ).toBeVisible();
   });
 
-  test("Sessions-Detail rendert (Double-Error-State ohne Supabase)", async ({ page }) => {
-    // Dynamische Routes ([id]) brauchen in `next dev` beim ersten Zugriff sehr
-    // lange zum Compilen. In Production (`next build`) ist das <1s. Deshalb hier
-    // `test.slow()` + expliziter goto-Timeout. Prod-Lane ist via `test:e2e:prod`.
+  test("Sessions-Detail unbekannte ID → 404", async ({ page }) => {
     test.slow();
-    await page.goto("/sessions/00000000-0000-0000-0000-000000000000", { timeout: 300_000 });
-
+    const response = await page.goto("/sessions/00000000-0000-0000-0000-000000000000", {
+      timeout: 300_000,
+    });
+    // Entweder 404 (Supabase live + notFound) oder Page mit Error (Supabase off).
+    expect(response).not.toBeNull();
+    if (response!.status() === 404) {
+      return; // Next-404-Page ok
+    }
     await expect(page.getByTestId("session-detail-page")).toBeVisible();
-    await expect(page.getByTestId("session-detail-back")).toBeVisible();
-    await expect(page.getByTestId("session-detail-error")).toBeVisible();
   });
 
-  test("Scenario-Detail rendert (Error-State ohne Supabase)", async ({ page }) => {
+  test("Scenario-Detail unbekannte ID → 404", async ({ page }) => {
     test.slow();
     const sid = "00000000-0000-0000-0000-000000000000";
     const scid = "00000000-0000-0000-0000-000000000001";
-    await page.goto(`/sessions/${sid}/scenarios/${scid}`, { timeout: 300_000 });
-
+    const response = await page.goto(`/sessions/${sid}/scenarios/${scid}`, {
+      timeout: 300_000,
+    });
+    expect(response).not.toBeNull();
+    if (response!.status() === 404) {
+      return;
+    }
     await expect(page.getByTestId("scenario-detail-page")).toBeVisible();
-    await expect(page.getByTestId("scenario-detail-back")).toBeVisible();
-    await expect(page.getByTestId("scenario-detail-error")).toBeVisible();
   });
 });

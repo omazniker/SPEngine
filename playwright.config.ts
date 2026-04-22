@@ -1,4 +1,14 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { defineConfig, devices } from "@playwright/test";
+
+// .env.local in den Spec-Prozess laden (Next.js lädt es automatisch für den Server,
+// aber Playwright-Tests laufen in einem separaten Node-Prozess).
+const ENV_FILE = resolve(__dirname, ".env.local");
+if (existsSync(ENV_FILE)) {
+  process.loadEnvFile(ENV_FILE);
+}
 
 /**
  * Playwright-Config gemäß `CLAUDE-TEST.md`.
@@ -17,6 +27,9 @@ const USE_PROD = process.env.PLAYWRIGHT_USE_PROD_BUILD === "1";
 const PROD_PORT = 3001;
 const DEV_PORT = 3000;
 const DEFAULT_URL = USE_PROD ? `http://localhost:${PROD_PORT}` : `http://localhost:${DEV_PORT}`;
+// Im Prod-Modus IMMER die Prod-URL — ein eventueller PLAYWRIGHT_BASE_URL-Override
+// (z.B. aus .env.local) darf den Port 3000-Dev-Default nicht einschleusen.
+const BASE_URL = USE_PROD ? DEFAULT_URL : (process.env.PLAYWRIGHT_BASE_URL ?? DEFAULT_URL);
 
 export default defineConfig({
   testDir: "./e2e/specs",
@@ -30,7 +43,7 @@ export default defineConfig({
   timeout: 180_000,
   expect: { timeout: 10_000 },
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? DEFAULT_URL,
+    baseURL: BASE_URL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -55,6 +68,12 @@ export default defineConfig({
     {
       name: "smoke",
       testMatch: /00-smoke\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "journey-buyer-setup",
+      testMatch: /01-buyer-setup\.spec\.ts/,
+      dependencies: ["smoke"],
       use: { ...devices["Desktop Chrome"] },
     },
     // Weitere Journeys werden hier ergänzt, sobald SPEngine-Next-Domäne steht.

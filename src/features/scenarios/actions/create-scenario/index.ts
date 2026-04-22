@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { createSupabaseServerClient } from "@/lib/supabase/supabase-server-client";
+import type { Json } from "@/types/supabase";
 
 import { createScenarioSchema } from "./schema";
 import type { CreateScenarioInput, CreateScenarioResult } from "./types";
@@ -23,7 +24,7 @@ export async function createScenarioAction(
   const { data, error } = await supabase.rpc("create_scenario", {
     p_session_id: parsed.data.sessionId,
     p_name: parsed.data.name,
-    p_config: parsed.data.config ?? {},
+    p_config: (parsed.data.config ?? {}) as Json,
   });
 
   if (error) return { error: error.message };

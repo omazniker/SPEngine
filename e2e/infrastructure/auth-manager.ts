@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import type { Browser } from "@playwright/test";
 
 import { LoginPage } from "../page-objects/login.page";
@@ -27,37 +29,52 @@ export async function newAuthenticatedContext(browser: Browser, user: TestUser) 
   return browser.newContext({ storageState });
 }
 
+async function authUserExists(email: string): Promise<boolean> {
+  const db = getSupabaseAdmin();
+  const { data, error } = await db.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  if (error) throw new Error(`auth.admin.listUsers fehlgeschlagen: ${error.message}`);
+  const needle = email.toLowerCase();
+  return data.users.some((u) => u.email?.toLowerCase() === needle);
+}
+
 /**
  * Stellt sicher, dass ein User existiert + eingeloggt ist. Wiederverwendet per
- * `getStoredTestUser`; erstellt neu über UI-Signup + DB-E-Mail-Verifikation + UI-Login.
+ * `getStoredTestUser` (inkl. Storage-State-Datei); erstellt neu über UI-Signup
+ * + DB-E-Mail-Verifikation + UI-Login.
  *
  * Voraussetzungen:
  *   - Supabase ENV gesetzt (siehe `.env.local.example`, inkl. SUPABASE_SERVICE_ROLE_KEY)
- *   - Tabelle `profiles` mit Spalte `email_verified` existiert (siehe `markEmailVerified`)
+ *   - Tabelle `profiles` mit Spalte `email_verified` existiert (siehe Migration
+ *     `20260421120000_table_profiles.sql`).
  *
- * Für Tests OHNE Supabase — z.B. reine Smoke-Runs — den User nur im Store ablegen
- * (siehe `getOrCreateBuyer` in `ui-finders.ts`).
+ * Re-Run-Verhalten: Wenn die auth.users-Zeile schon existiert (z.B. Store-Reset
+ * aber DB nicht gereset), wird der Signup-Schritt übersprungen und nur via Login
+ * eine neue Session erzeugt.
  */
 export async function ensureUser(browser: Browser, params: EnsureUserParams): Promise<TestUser> {
   const cached = getStoredTestUser(params.email);
-  if (cached?.authStatePath) return cached;
+  if (cached?.authStatePath && existsSync(cached.authStatePath)) {
+    return cached;
+  }
+
+  const needsSignup = !(await authUserExists(params.email));
 
   const context = await browser.newContext();
   const page = await context.newPage();
 
   try {
-    const signupPage = new SignupPage(page);
-    await signupPage.goto();
-    await signupPage.signup({
-      email: params.email,
-      password: params.password,
-      company: params.company,
-    });
+    if (needsSignup) {
+      const signupPage = new SignupPage(page);
+      await signupPage.goto();
+      await signupPage.signup({
+        email: params.email,
+        password: params.password,
+        company: params.company,
+      });
+    }
 
     await markEmailVerified(params.email);
 
-    // Wenn Signup direkt einlogged (Session vorhanden), ist der Context bereits
-    // authenticated. Zur Sicherheit nochmal explizit einloggen.
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(params.email, params.password);

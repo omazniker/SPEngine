@@ -1,41 +1,32 @@
 import type { Browser } from "@playwright/test";
 
+import { ensureUser } from "../infrastructure/auth-manager";
 import { journeyGet, journeyHas, journeySet } from "../infrastructure/journey-store";
-import {
-  getStoredTestUser,
-  storeTestUser,
-  type TestUser,
-  type TestUserRole,
-} from "../infrastructure/test-user-store";
+import { type TestUser, type TestUserRole } from "../infrastructure/test-user-store";
 import { DEFAULT_PASSWORD, SINGLETON_EMAILS, supplierEmail } from "./test-data-factory";
 
 /**
- * Liefert den Singleton-Buyer-User. Erstellt ihn beim ersten Aufruf.
- *
- * **Status:** Skelett. `ensureUser` in `auth-manager` wirft noch, bis Login/Signup-Seiten stehen.
+ * Liefert den Singleton-Buyer-User. Erstellt ihn beim ersten Aufruf per UI-Signup
+ * + Login (siehe `auth-manager.ensureUser`).
  */
-export async function getOrCreateBuyer(_browser: Browser): Promise<TestUser> {
-  const cached = getStoredTestUser(SINGLETON_EMAILS.buyer);
-  if (cached) return cached;
-
-  return storeTestUser({
+export async function getOrCreateBuyer(browser: Browser): Promise<TestUser> {
+  return ensureUser(browser, {
     email: SINGLETON_EMAILS.buyer,
     password: DEFAULT_PASSWORD,
     role: "buyer",
+    company: "Buyer E2E GmbH",
   });
 }
 
 /**
  * Liefert den Singleton-Approver-User.
  */
-export async function getOrCreateApprover(_browser: Browser): Promise<TestUser> {
-  const cached = getStoredTestUser(SINGLETON_EMAILS.approver);
-  if (cached) return cached;
-
-  return storeTestUser({
+export async function getOrCreateApprover(browser: Browser): Promise<TestUser> {
+  return ensureUser(browser, {
     email: SINGLETON_EMAILS.approver,
     password: DEFAULT_PASSWORD,
     role: "approver",
+    company: "Approver E2E GmbH",
   });
 }
 
@@ -43,15 +34,12 @@ export async function getOrCreateApprover(_browser: Browser): Promise<TestUser> 
  * Liefert einen indexed Supplier-User (0-basiert). Mehrere Supplier werden über
  * unterschiedliche Indizes angelegt.
  */
-export async function getOrCreateSupplier(_browser: Browser, index = 0): Promise<TestUser> {
-  const email = supplierEmail(index);
-  const cached = getStoredTestUser(email);
-  if (cached) return cached;
-
-  return storeTestUser({
-    email,
+export async function getOrCreateSupplier(browser: Browser, index = 0): Promise<TestUser> {
+  return ensureUser(browser, {
+    email: supplierEmail(index),
     password: DEFAULT_PASSWORD,
     role: "supplier",
+    company: `Supplier ${index} E2E GmbH`,
   });
 }
 
