@@ -94,6 +94,12 @@ export default defineConfig({
       dependencies: ["journey-user-setup"],
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "journey-cascade-delete",
+      testMatch: /05-cascade-delete\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Weitere Journeys werden hier ergänzt, sobald SPEngine-Next-Domäne steht.
   ],
 });
