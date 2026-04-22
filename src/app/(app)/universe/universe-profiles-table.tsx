@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
+import { StarIcon } from "lucide-react";
+
 import { DataTable, type ColumnDef } from "@/components/table/data-table";
 import type { UniverseProfileListItem } from "@/features/universe";
 import { formatDateTime } from "@/lib/format";
@@ -13,7 +15,18 @@ export function UniverseProfilesTable({ rows }: { rows: UniverseProfileListItem[
     {
       id: "name",
       header: "Name",
-      cell: (row) => <span className="font-medium">{row.name}</span>,
+      cell: (row) => (
+        <span className="flex items-center gap-2 font-medium">
+          {row.is_default && (
+            <StarIcon
+              className="size-4 text-amber-500"
+              data-testid={`universe-default-star-${row.id}`}
+              aria-label="Standard-Universum"
+            />
+          )}
+          {row.name}
+        </span>
+      ),
     },
     {
       id: "bonds",

@@ -37,6 +37,16 @@ export class UniverseDetailPage extends BasePage {
     await expect(this.page.getByTestId(`bonds-row-${count - 1}`)).toBeVisible();
   }
 
+  async toggleDefault(): Promise<void> {
+    await this.page.getByTestId("universe-detail-toggle-default").click();
+  }
+
+  async expectIsDefault(isDefault: boolean): Promise<void> {
+    const button = this.page.getByTestId("universe-detail-toggle-default");
+    if (isDefault) await expect(button).toContainText("Standard");
+    else await expect(button).toContainText("Als Standard markieren");
+  }
+
   async deleteUniverse(): Promise<void> {
     // Delete-Button aus dem Header, nicht aus einem Row-Menu — braucht kein
     // Keyboard-Workaround, aber Radix' AlertDialog-Confirm-Button ist wieder

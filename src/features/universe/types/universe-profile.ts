@@ -4,6 +4,7 @@ export interface UniverseProfileListItem {
   name: string;
   bond_count: number;
   source_file: string | null;
+  is_default: boolean;
   created_at: string;
 }
 

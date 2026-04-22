@@ -34,6 +34,13 @@ export type {
   DeleteUniverseProfileResult,
 } from "./actions/delete-universe-profile/types";
 
+export { toggleUniverseProfileDefaultAction } from "./actions/toggle-universe-profile-default";
+export { toggleUniverseProfileDefaultSchema } from "./actions/toggle-universe-profile-default/schema";
+export type {
+  ToggleUniverseProfileDefaultInput,
+  ToggleUniverseProfileDefaultResult,
+} from "./actions/toggle-universe-profile-default/types";
+
 export { parseUniverseXlsx } from "./utils/parse-universe-xlsx";
 
 export type {

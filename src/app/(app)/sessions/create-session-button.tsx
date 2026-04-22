@@ -86,7 +86,9 @@ export function CreateSessionButton({
                     id="session-universe"
                     name="universeProfileId"
                     data-testid="session-create-universe-select"
-                    defaultValue=""
+                    defaultValue={
+                      universeProfiles.find((p) => p.is_default)?.id ?? ""
+                    }
                     className={cn(
                       "flex h-9 w-full items-center rounded-md border border-input bg-background px-3 text-sm",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -95,6 +97,7 @@ export function CreateSessionButton({
                     <option value="">— Kein Universum —</option>
                     {universeProfiles.map((profile) => (
                       <option key={profile.id} value={profile.id}>
+                        {profile.is_default ? "★ " : ""}
                         {profile.name} ({profile.bond_count} Bonds)
                       </option>
                     ))}

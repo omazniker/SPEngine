@@ -159,6 +159,7 @@ export type Database = {
           bonds: Json
           created_at: string
           id: string
+          is_default: boolean
           name: string
           source_file: string | null
           user_id: string
@@ -168,6 +169,7 @@ export type Database = {
           bonds?: Json
           created_at?: string
           id?: string
+          is_default?: boolean
           name: string
           source_file?: string | null
           user_id: string
@@ -177,6 +179,7 @@ export type Database = {
           bonds?: Json
           created_at?: string
           id?: string
+          is_default?: boolean
           name?: string
           source_file?: string | null
           user_id?: string
@@ -248,12 +251,17 @@ export type Database = {
           bond_count: number
           created_at: string
           id: string
+          is_default: boolean
           name: string
           source_file: string
         }[]
       }
       restore_session: { Args: { p_session_id: string }; Returns: undefined }
       save_scenario: { Args: { p_scenario_id: string }; Returns: undefined }
+      toggle_universe_profile_default: {
+        Args: { p_id: string }
+        Returns: boolean
+      }
       update_scenario_config: {
         Args: { p_config: Json; p_scenario_id: string }
         Returns: undefined

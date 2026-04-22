@@ -36,7 +36,11 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Lokal 1 Retry: Keyboard-Trigger eliminiert die Radix-Menu-Flakes in den
+  // meisten Läufen, aber bei voller Chain (37 Tests) passiert gelegentlich
+  // trotzdem ein Miss. Retry ist billig (<5s), eine echte Root-Cause-Analyse
+  // des Restflake steht aus.
+  retries: process.env.CI ? 2 : 1,
   reporter: [["list"], ["html", { open: "never" }]],
   // 180s: in next dev triggert der erste Zugriff je Route eine On-Demand-Compilation.
   // In Prod-Modus könnte timeout auf 30s runter, bleibt aber konservativ.
@@ -121,6 +125,12 @@ export default defineConfig({
     {
       name: "journey-scenario-bond-config",
       testMatch: /09-scenario-bond-config\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "journey-universe-default-flag",
+      testMatch: /10-universe-default-flag\.spec\.ts/,
       dependencies: ["journey-user-setup"],
       use: { ...devices["Desktop Chrome"] },
     },

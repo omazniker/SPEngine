@@ -10,6 +10,7 @@ import { getUniverseProfileAction, type UniverseBond } from "@/features/universe
 
 import { BondsTable } from "./bonds-table";
 import { DeleteUniverseButton } from "./delete-universe-button";
+import { ToggleDefaultButton } from "./toggle-default-button";
 
 export const metadata: Metadata = {
   title: "Universum — SPEngine",
@@ -94,7 +95,13 @@ export default async function UniverseDetailPage({
             <span>Erstellt: {formatDateTime(profile.created_at)}</span>
           </p>
         </div>
-        <DeleteUniverseButton universeProfileId={profile.id} universeName={profile.name} />
+        <div className="flex items-start gap-2">
+          <ToggleDefaultButton
+            universeProfileId={profile.id}
+            initialIsDefault={profile.is_default}
+          />
+          <DeleteUniverseButton universeProfileId={profile.id} universeName={profile.name} />
+        </div>
       </header>
 
       <section className="flex flex-col gap-3">
