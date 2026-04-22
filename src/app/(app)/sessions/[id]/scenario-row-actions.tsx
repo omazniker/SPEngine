@@ -80,6 +80,10 @@ export function ScenarioRowActions({ row }: { row: ScenarioListItem }) {
               aria-label="Aktionen"
               disabled={isPending}
               data-testid={`scenarios-row-actions-${row.id}`}
+              // Nicht entfernen — Radix' Outside-Click-Listener würde den
+              // propagierten Klick als "außerhalb" werten und das Menu sofort
+              // wieder schließen. Separat vom DataTable-Event-Target-Filter.
+              onClick={(event) => event.stopPropagation()}
             />
           }
         >

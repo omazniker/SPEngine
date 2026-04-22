@@ -85,6 +85,10 @@ export function SessionRowActions({ row }: { row: SessionListItem }) {
               aria-label="Aktionen"
               disabled={isPending}
               data-testid={`sessions-row-actions-${row.id}`}
+              // Nicht entfernen — Radix' Outside-Click-Listener würde den
+              // propagierten Klick als "außerhalb" werten und das Menu sofort
+              // wieder schließen. Separat vom DataTable-Event-Target-Filter.
+              onClick={(event) => event.stopPropagation()}
             />
           }
         >
