@@ -138,7 +138,52 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "sessions_universe_profile_id_fkey"
+            columns: ["universe_profile_id"]
+            isOneToOne: false
+            referencedRelation: "universe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      universe_profiles: {
+        Row: {
+          bond_count: number
+          bonds: Json
+          created_at: string
+          id: string
+          name: string
+          source_file: string | null
+          user_id: string
+        }
+        Insert: {
+          bond_count?: number
+          bonds?: Json
+          created_at?: string
+          id?: string
+          name: string
+          source_file?: string | null
+          user_id: string
+        }
+        Update: {
+          bond_count?: number
+          bonds?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          source_file?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "universe_profiles_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -157,8 +202,13 @@ export type Database = {
         Returns: string
       }
       create_session: { Args: { p_name: string }; Returns: string }
+      create_universe_profile: {
+        Args: { p_bonds?: Json; p_name: string; p_source_file?: string }
+        Returns: string
+      }
       delete_scenario: { Args: { p_scenario_id: string }; Returns: undefined }
       delete_session: { Args: { p_session_id: string }; Returns: undefined }
+      delete_universe_profile: { Args: { p_id: string }; Returns: undefined }
       get_scenario: { Args: { p_scenario_id: string }; Returns: Json }
       get_scenarios: {
         Args: { p_session_id: string }
@@ -186,6 +236,17 @@ export type Database = {
           scenario_count: number
           status: string
           updated_at: string
+        }[]
+      }
+      get_universe_profile: { Args: { p_id: string }; Returns: Json }
+      get_universe_profiles: {
+        Args: never
+        Returns: {
+          bond_count: number
+          created_at: string
+          id: string
+          name: string
+          source_file: string
         }[]
       }
       restore_session: { Args: { p_session_id: string }; Returns: undefined }

@@ -1,0 +1,53 @@
+"use client";
+
+import { DataTable, type ColumnDef } from "@/components/table/data-table";
+import type { UniverseProfileListItem } from "@/features/universe";
+import { formatDateTime } from "@/lib/format";
+
+export function UniverseProfilesTable({ rows }: { rows: UniverseProfileListItem[] }) {
+  const columns: ColumnDef<UniverseProfileListItem>[] = [
+    {
+      id: "name",
+      header: "Name",
+      cell: (row) => <span className="font-medium">{row.name}</span>,
+    },
+    {
+      id: "bonds",
+      header: "Bonds",
+      cell: (row) => <span className="tabular-nums">{row.bond_count}</span>,
+      className: "text-right",
+      headClassName: "text-right",
+    },
+    {
+      id: "source",
+      header: "Quelle",
+      cell: (row) => (
+        <span className="text-muted-foreground">{row.source_file ?? "—"}</span>
+      ),
+    },
+    {
+      id: "created",
+      header: "Erstellt",
+      cell: (row) => (
+        <span className="text-muted-foreground">{formatDateTime(row.created_at)}</span>
+      ),
+    },
+  ];
+
+  return (
+    <DataTable<UniverseProfileListItem>
+      testIdPrefix="universe"
+      columns={columns}
+      rows={rows}
+      getRowId={(row) => row.id}
+      emptyState={
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-sm text-muted-foreground">Noch keine Universe-Profile angelegt.</p>
+          <p className="text-xs text-muted-foreground">
+            Oben rechts auf „Neues Universum“ klicken.
+          </p>
+        </div>
+      }
+    />
+  );
+}

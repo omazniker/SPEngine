@@ -49,6 +49,16 @@ test.describe("Smoke", () => {
     ).toBeVisible();
   });
 
+  test("Universe-Seite rendert (Empty-State ohne Daten)", async ({ page }) => {
+    await page.goto("/universe");
+
+    await expect(page.getByTestId("universe-page")).toBeVisible();
+    await expect(page.getByTestId("universe-create-button")).toBeVisible();
+    await expect(
+      page.getByTestId("universe-empty").or(page.getByTestId("universe-error")),
+    ).toBeVisible();
+  });
+
   test("Sessions-Detail unbekannte ID → 404", async ({ page }) => {
     test.slow();
     const response = await page.goto("/sessions/00000000-0000-0000-0000-000000000000", {
