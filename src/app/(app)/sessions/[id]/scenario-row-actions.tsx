@@ -80,7 +80,6 @@ export function ScenarioRowActions({ row }: { row: ScenarioListItem }) {
               aria-label="Aktionen"
               disabled={isPending}
               data-testid={`scenarios-row-actions-${row.id}`}
-              onClick={(event) => event.stopPropagation()}
             />
           }
         >

@@ -85,7 +85,6 @@ export function SessionRowActions({ row }: { row: SessionListItem }) {
               aria-label="Aktionen"
               disabled={isPending}
               data-testid={`sessions-row-actions-${row.id}`}
-              onClick={(event) => event.stopPropagation()}
             />
           }
         >
