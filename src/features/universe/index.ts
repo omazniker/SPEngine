@@ -13,6 +13,15 @@ export type {
   CreateUniverseProfileResult,
 } from "./actions/create-universe-profile/types";
 
+export { uploadUniverseProfileAction } from "./actions/upload-universe-profile";
+export { uploadUniverseProfileSchema } from "./actions/upload-universe-profile/schema";
+export type {
+  UploadUniverseProfileInput,
+  UploadUniverseProfileResult,
+} from "./actions/upload-universe-profile/types";
+
+export { parseUniverseXlsx } from "./utils/parse-universe-xlsx";
+
 export type {
   UniverseBond,
   UniverseProfileDetail,
