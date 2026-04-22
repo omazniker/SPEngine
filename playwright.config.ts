@@ -88,6 +88,12 @@ export default defineConfig({
       dependencies: ["journey-user-setup"],
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "journey-scenario-lifecycle",
+      testMatch: /04-scenario-lifecycle\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Weitere Journeys werden hier ergänzt, sobald SPEngine-Next-Domäne steht.
   ],
 });

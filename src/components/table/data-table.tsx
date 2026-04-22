@@ -86,11 +86,30 @@ export function DataTable<TRow>({
               key={id}
               data-testid={`${testIdPrefix}-row-${id}`}
               className={clickable ? "cursor-pointer" : undefined}
-              onClick={clickable ? () => onRowClick(row) : undefined}
+              onClick={
+                clickable
+                  ? (event) => {
+                      // Klicks auf interaktive Kinder (Action-Menüs, Buttons,
+                      // Links, MenuItems) dürfen die Row-Navigation nicht
+                      // auslösen — sonst navigiert z.B. ein Dropdown-Klick zum
+                      // Detail. stopPropagation in den Kindern reicht nicht,
+                      // weil Radix via Fokus-Rückstellung synthetische Clicks
+                      // emittieren kann, die außerhalb des Child-Handlers
+                      // wieder bubblen.
+                      const target = event.target as HTMLElement;
+                      if (target.closest('button, a, [role="menuitem"], [role="menu"], [role="dialog"]')) {
+                        return;
+                      }
+                      onRowClick(row);
+                    }
+                  : undefined
+              }
               onKeyDown={
                 clickable
                   ? (event) => {
                       if (event.key === "Enter" || event.key === " ") {
+                        // Key-Events von Child-Buttons nicht umlenken.
+                        if (event.target !== event.currentTarget) return;
                         event.preventDefault();
                         onRowClick(row);
                       }
