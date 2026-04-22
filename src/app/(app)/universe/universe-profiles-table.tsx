@@ -1,10 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { DataTable, type ColumnDef } from "@/components/table/data-table";
 import type { UniverseProfileListItem } from "@/features/universe";
 import { formatDateTime } from "@/lib/format";
 
 export function UniverseProfilesTable({ rows }: { rows: UniverseProfileListItem[] }) {
+  const router = useRouter();
+
   const columns: ColumnDef<UniverseProfileListItem>[] = [
     {
       id: "name",
@@ -40,6 +44,7 @@ export function UniverseProfilesTable({ rows }: { rows: UniverseProfileListItem[
       columns={columns}
       rows={rows}
       getRowId={(row) => row.id}
+      onRowClick={(row) => router.push(`/universe/${row.id}`)}
       emptyState={
         <div className="flex flex-col items-center gap-2">
           <p className="text-sm text-muted-foreground">Noch keine Universe-Profile angelegt.</p>

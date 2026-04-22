@@ -6,6 +6,13 @@
 export { getUniverseProfilesAction } from "./actions/get-universe-profiles";
 export type { GetUniverseProfilesResult } from "./actions/get-universe-profiles/types";
 
+export { getUniverseProfileAction } from "./actions/get-universe-profile";
+export { getUniverseProfileSchema } from "./actions/get-universe-profile/schema";
+export type {
+  GetUniverseProfileInput,
+  GetUniverseProfileResult,
+} from "./actions/get-universe-profile/types";
+
 export { createUniverseProfileAction } from "./actions/create-universe-profile";
 export { createUniverseProfileSchema } from "./actions/create-universe-profile/schema";
 export type {
@@ -19,6 +26,13 @@ export type {
   UploadUniverseProfileInput,
   UploadUniverseProfileResult,
 } from "./actions/upload-universe-profile/types";
+
+export { deleteUniverseProfileAction } from "./actions/delete-universe-profile";
+export { deleteUniverseProfileSchema } from "./actions/delete-universe-profile/schema";
+export type {
+  DeleteUniverseProfileInput,
+  DeleteUniverseProfileResult,
+} from "./actions/delete-universe-profile/types";
 
 export { parseUniverseXlsx } from "./utils/parse-universe-xlsx";
 
