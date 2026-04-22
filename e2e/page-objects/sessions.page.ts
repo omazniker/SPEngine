@@ -35,7 +35,14 @@ export class SessionsPage extends BasePage {
   }
 
   async openRowMenu(id: string): Promise<void> {
-    await this.page.getByTestId(`sessions-row-actions-${id}`).click();
+    // Via Keyboard triggern, nicht Mouse-Click. Radix' DropdownMenu hat bei
+    // synthetic Mouse-Clicks aus Playwright einen Race: der Menu-Open und ein
+    // Outside-Click-Handler feuern in ungünstiger Reihenfolge, das Menu
+    // schließt sich sofort wieder. Keyboard-Events (Enter/Space) gehen durch
+    // einen anderen Event-Pfad ohne Pointer-Semantik — stabil.
+    const trigger = this.page.getByTestId(`sessions-row-actions-${id}`);
+    await trigger.focus();
+    await this.page.keyboard.press("Enter");
     await expect(this.page.getByTestId(`sessions-row-menu-${id}`)).toBeVisible();
   }
 

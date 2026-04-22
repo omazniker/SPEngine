@@ -72,7 +72,11 @@ export class SessionDetailPage extends BasePage {
   }
 
   async openScenarioRowMenu(id: string): Promise<void> {
-    await this.page.getByTestId(`scenarios-row-actions-${id}`).click();
+    // Via Keyboard triggern, nicht Mouse-Click (siehe SessionsPage.openRowMenu
+    // für die ausführliche Erklärung).
+    const trigger = this.page.getByTestId(`scenarios-row-actions-${id}`);
+    await trigger.focus();
+    await this.page.keyboard.press("Enter");
     await expect(this.page.getByTestId(`scenarios-row-menu-${id}`)).toBeVisible();
   }
 
