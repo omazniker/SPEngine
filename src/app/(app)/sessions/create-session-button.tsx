@@ -20,8 +20,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createSessionAction, createSessionSchema } from "@/features/sessions";
+import type { UniverseProfileListItem } from "@/features/universe";
+import { cn } from "@/lib/utils";
 
-export function CreateSessionButton() {
+export function CreateSessionButton({
+  universeProfiles,
+}: {
+  universeProfiles: UniverseProfileListItem[];
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -61,16 +67,40 @@ export function CreateSessionButton() {
               router.push(`/sessions/${res.sessionId}`);
             }}
           >
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="session-name">Name</Label>
-              <Input
-                id="session-name"
-                name="name"
-                type="text"
-                required
-                autoFocus
-                data-testid="session-create-name-input"
-              />
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="session-name">Name</Label>
+                <Input
+                  id="session-name"
+                  name="name"
+                  type="text"
+                  required
+                  autoFocus
+                  data-testid="session-create-name-input"
+                />
+              </div>
+              {universeProfiles.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="session-universe">Universum (optional)</Label>
+                  <select
+                    id="session-universe"
+                    name="universeProfileId"
+                    data-testid="session-create-universe-select"
+                    defaultValue=""
+                    className={cn(
+                      "flex h-9 w-full items-center rounded-md border border-input bg-background px-3 text-sm",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    )}
+                  >
+                    <option value="">— Kein Universum —</option>
+                    {universeProfiles.map((profile) => (
+                      <option key={profile.id} value={profile.id}>
+                        {profile.name} ({profile.bond_count} Bonds)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
           </GenericForm>
         </AppDialogBody>

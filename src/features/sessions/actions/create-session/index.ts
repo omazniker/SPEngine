@@ -24,7 +24,10 @@ export async function createSessionAction(
   }
 
   const { supabase } = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("create_session", { p_name: parsed.data.name });
+  const { data, error } = await supabase.rpc("create_session", {
+    p_name: parsed.data.name,
+    p_universe_profile_id: parsed.data.universeProfileId,
+  });
 
   if (error) return { error: error.message };
 

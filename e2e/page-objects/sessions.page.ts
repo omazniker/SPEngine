@@ -14,13 +14,19 @@ export class SessionsPage extends BasePage {
   }
 
   /**
-   * Öffnet den Create-Dialog, gibt Namen ein, submit. Navigiert anschließend
-   * automatisch auf /sessions/[newId] (siehe create-session-button.tsx).
+   * Öffnet den Create-Dialog, gibt Namen (und optional Universe-Profil-ID) ein,
+   * submit. Navigiert anschließend automatisch auf /sessions/[newId]
+   * (siehe create-session-button.tsx).
    */
-  async createSession(name: string): Promise<void> {
+  async createSession(name: string, universeProfileId?: string): Promise<void> {
     await this.page.getByTestId("sessions-create-button").click();
     await expect(this.page.getByTestId("sessions-create-dialog")).toBeVisible();
     await this.page.getByTestId("session-create-name-input").fill(name);
+    if (universeProfileId !== undefined) {
+      await this.page
+        .getByTestId("session-create-universe-select")
+        .selectOption(universeProfileId);
+    }
     await this.page.getByTestId("session-create-submit").click();
   }
 

@@ -5,4 +5,9 @@ export const createSessionSchema = z.object({
     .string({ error: "Name erforderlich" })
     .min(1, "Name darf nicht leer sein")
     .max(120, "Name maximal 120 Zeichen"),
+  universeProfileId: z
+    .string()
+    .uuid("Ungültige Universe-Profile-ID")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
 });

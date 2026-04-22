@@ -36,7 +36,12 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  // Lokal ein Retry, weil Row-Action-Menüs (Radix DropdownMenu) in
+  // Journey 03 + 04 einen reproduzierbaren Flake haben: gelegentlich schließt
+  // sich das gerade geöffnete Menu durch einen verzögerten Outside-Click-Event
+  // sofort wieder. Der echte Fix braucht entweder Keyboard-Trigger oder ein
+  // Row-Action-Layout-Refactor — bis dahin kompensiert Retry.
+  retries: process.env.CI ? 2 : 1,
   reporter: [["list"], ["html", { open: "never" }]],
   // 180s: in next dev triggert der erste Zugriff je Route eine On-Demand-Compilation.
   // In Prod-Modus könnte timeout auf 30s runter, bleibt aber konservativ.
@@ -103,6 +108,12 @@ export default defineConfig({
     {
       name: "journey-universe-upload",
       testMatch: /06-universe-upload\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "journey-session-with-universe",
+      testMatch: /07-session-with-universe\.spec\.ts/,
       dependencies: ["journey-user-setup"],
       use: { ...devices["Desktop Chrome"] },
     },

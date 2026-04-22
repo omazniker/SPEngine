@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge, type StatusTone } from "@/components/ui/status-badge";
 import { getScenariosAction } from "@/features/scenarios";
 import { getSessionAction, SESSION_STATUS, type SessionStatus } from "@/features/sessions";
+import { getUniverseProfilesAction } from "@/features/universe";
 
 import { CreateScenarioButton } from "./create-scenario-button";
 import { ScenariosTable } from "./scenarios-table";
@@ -79,6 +80,19 @@ export default async function SessionDetailPage({
   const scenarios =
     "data" in scenariosResult && scenariosResult.data ? scenariosResult.data : [];
 
+  // Universe-Name nachladen wenn die Session an ein Profil gebunden ist. Separater
+  // RPC statt DB-Join, damit RLS auf beiden Tabellen unabhängig wirkt.
+  let universeName: string | null = null;
+  if (session.universe_profile_id) {
+    const universeResult = await getUniverseProfilesAction();
+    if (!("error" in universeResult)) {
+      const match = universeResult.data.find(
+        (profile) => profile.id === session.universe_profile_id,
+      );
+      universeName = match?.name ?? null;
+    }
+  }
+
   return (
     <main
       data-testid="session-detail-page"
@@ -111,6 +125,14 @@ export default async function SessionDetailPage({
           >
             ID: {session.id}
           </p>
+          {universeName && (
+            <p
+              className="text-xs text-muted-foreground"
+              data-testid="session-detail-universe"
+            >
+              Universum: <span className="font-medium">{universeName}</span>
+            </p>
+          )}
         </div>
         <CreateScenarioButton sessionId={session.id} disabled={session.status !== "ACTIVE"} />
       </header>

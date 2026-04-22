@@ -201,7 +201,10 @@ export type Database = {
         Args: { p_config?: Json; p_name: string; p_session_id: string }
         Returns: string
       }
-      create_session: { Args: { p_name: string }; Returns: string }
+      create_session: {
+        Args: { p_name: string; p_universe_profile_id?: string }
+        Returns: string
+      }
       create_universe_profile: {
         Args: { p_bonds?: Json; p_name: string; p_source_file?: string }
         Returns: string

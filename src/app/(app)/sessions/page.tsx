@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { getSessionsAction } from "@/features/sessions";
+import { getUniverseProfilesAction } from "@/features/universe";
 
 import { CreateSessionButton } from "./create-session-button";
 import { SessionsTable } from "./sessions-table";
@@ -12,7 +13,11 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function SessionsPage() {
-  const result = await getSessionsAction();
+  const [result, universeResult] = await Promise.all([
+    getSessionsAction(),
+    getUniverseProfilesAction(),
+  ]);
+  const universeProfiles = "error" in universeResult ? [] : universeResult.data;
 
   return (
     <main
@@ -26,7 +31,7 @@ export default async function SessionsPage() {
             Arbeitssessions mit Portfolio, Constraints und Szenarien.
           </p>
         </div>
-        <CreateSessionButton />
+        <CreateSessionButton universeProfiles={universeProfiles} />
       </header>
 
       {"error" in result ? (
