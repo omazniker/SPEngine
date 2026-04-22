@@ -76,6 +76,12 @@ export default defineConfig({
       dependencies: ["smoke"],
       use: { ...devices["Desktop Chrome"] },
     },
+    {
+      name: "journey-rls-isolation",
+      testMatch: /02-rls-isolation\.spec\.ts/,
+      dependencies: ["journey-user-setup"],
+      use: { ...devices["Desktop Chrome"] },
+    },
     // Weitere Journeys werden hier ergänzt, sobald SPEngine-Next-Domäne steht.
   ],
 });
